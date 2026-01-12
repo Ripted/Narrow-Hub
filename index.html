@@ -40,6 +40,36 @@
             opacity: 0.9;
         }
 
+        .cors-notice {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: #856404;
+        }
+
+        .cors-notice h3 {
+            margin-bottom: 10px;
+            color: #856404;
+        }
+
+        .cors-notice ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .cors-notice li {
+            margin-bottom: 8px;
+        }
+
+        .cors-notice code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
         .tools-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -210,6 +240,22 @@
         .github-link:hover {
             text-decoration: underline;
         }
+
+        .proxy-selector {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .proxy-selector label {
+            margin-bottom: 10px;
+        }
+
+        .proxy-selector select {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>
@@ -218,6 +264,23 @@
             <h1>🎯 Narrow Arrow Stats Hub</h1>
             <p class="subtitle">Comprehensive statistics and tools for Narrow Arrow players</p>
         </header>
+
+        <div class="cors-notice">
+            <h3>⚠️ CORS Proxy Required</h3>
+            <p>The Narrow Arrow API blocks requests from web browsers. Select a CORS proxy below to enable the tools:</p>
+            
+            <div class="proxy-selector">
+                <label for="proxySelect">Select CORS Proxy:</label>
+                <select id="proxySelect" onchange="updateProxy()">
+                    <option value="https://corsproxy.io/?">corsproxy.io (Recommended)</option>
+                    <option value="https://api.allorigins.win/raw?url=">allorigins.win</option>
+                    <option value="https://cors-anywhere.herokuapp.com/">cors-anywhere (May be rate limited)</option>
+                    <option value="">No Proxy (Will fail)</option>
+                </select>
+            </div>
+
+            <p style="margin-top: 15px;"><strong>Alternative:</strong> Open your browser console (F12) and paste these commands directly on <code>play.narrowarrow.xyz</code> to bypass CORS entirely!</p>
+        </div>
 
         <div class="tools-grid">
             <!-- Player Lookup -->
@@ -323,6 +386,15 @@
 
     <script>
         const API_BASE = 'https://api.narrowarrow.xyz';
+        let PROXY = 'https://corsproxy.io/?';
+
+        function updateProxy() {
+            PROXY = document.getElementById('proxySelect').value;
+        }
+
+        function getURL(endpoint) {
+            return PROXY + encodeURIComponent(API_BASE + endpoint);
+        }
 
         async function lookupPlayer() {
             const username = document.getElementById('playerSearch').value.trim();
@@ -337,7 +409,7 @@
             resultsDiv.innerHTML = '<div class="loading">Loading player data...</div>';
 
             try {
-                const response = await fetch(`${API_BASE}/user/${username}`);
+                const response = await fetch(getURL(`/user/${username}`));
                 if (!response.ok) throw new Error('Player not found');
                 
                 const data = await response.json();
@@ -370,7 +442,7 @@
                     </div>
                 `;
             } catch (error) {
-                resultsDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                resultsDiv.innerHTML = `<div class="error">Error: ${error.message}. Try a different proxy or use browser console on play.narrowarrow.xyz</div>`;
             }
         }
 
@@ -380,7 +452,7 @@
             resultsDiv.innerHTML = '<div class="loading">Loading leaderboard...</div>';
 
             try {
-                const response = await fetch(`${API_BASE}/leaderboard/trophies`);
+                const response = await fetch(getURL('/leaderboard/trophies'));
                 const data = await response.json();
                 
                 let html = '<h3>🏆 Top Players</h3><table class="stats-table"><thead><tr><th>Rank</th><th>Player</th><th>Trophies</th><th>League</th><th>Win Streak</th></tr></thead><tbody>';
@@ -417,7 +489,7 @@
             resultsDiv.innerHTML = '<div class="loading">Loading level data...</div>';
 
             try {
-                const response = await fetch(`${API_BASE}/level-details/${levelId}?isCustomLevel=true`);
+                const response = await fetch(getURL(`/level-details/${levelId}?isCustomLevel=true`));
                 if (!response.ok) throw new Error('Level not found');
                 
                 const data = await response.json();
@@ -465,7 +537,7 @@
             resultsDiv.innerHTML = '<div class="loading">Loading levels...</div>';
 
             try {
-                const response = await fetch(`${API_BASE}/published-levels?filter=${filter}&page=0`);
+                const response = await fetch(getURL(`/published-levels?filter=${filter}&page=0`));
                 const levels = await response.json();
                 
                 let html = `<h3>${filter === 'popular' ? '🔥 Most Popular' : '✨ Newest'} Levels</h3>`;
@@ -495,7 +567,7 @@
             resultsDiv.innerHTML = '<div class="loading">Loading records...</div>';
 
             try {
-                const response = await fetch(`${API_BASE}/leaderboard/Official%20Level?name=${encodeURIComponent(levelName)}`);
+                const response = await fetch(getURL(`/leaderboard/Official%20Level?name=${encodeURIComponent(levelName)}`));
                 const records = await response.json();
                 
                 let html = `<h3>🏆 ${levelName} - Top Times</h3>`;
@@ -529,7 +601,7 @@
             resultsDiv.innerHTML = '<div class="loading">Analyzing run...</div>';
 
             try {
-                const response = await fetch(`${API_BASE}/runs/${runId}`);
+                const response = await fetch(getURL(`/runs/${runId}`));
                 if (!response.ok) throw new Error('Run not found');
                 
                 const data = await response.json();
