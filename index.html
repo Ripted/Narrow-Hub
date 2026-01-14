@@ -13,22 +13,24 @@
             --text: #f8fafc;
             --text-dim: #94a3b8;
             --border: #334155;
-            --header-grad: linear-gradient(to right, #0f172a, #1e293b);
+            --success: #22c55e;
+            --error: #ef4444;
+            --purple: #a855f7;
         }
 
-        /* Cooler Themes */
+        /* Themes */
         body.theme-pitch-black { --bg: #000000; --card: #111111; --border: #222; --accent: #ffffff; }
         body.theme-cyberpunk { --bg: #0d0221; --card: #190e4f; --accent: #00ffcc; --text: #00ffcc; --border: #540d6e; }
-        body.theme-light { --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --text-dim: #64748b; --border: #e2e8f0; --accent: #2563eb; }
+        body.theme-light { --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --text-dim: #64748b; --border: #e2e8f0; --accent: #2563eb; }
         body.theme-crimson { --bg: #1a0a0a; --card: #2d0f0f; --accent: #ef4444; --border: #451a1a; }
-        body.theme-forest { --bg: #061006; --card: #0d200d; --accent: #22c55e; --border: #1a331a; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            font-family: 'Inter', system-ui, sans-serif; 
             background-color: var(--bg); 
             color: var(--text);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: background 0.3s;
+            overflow-x: hidden;
             min-height: 100vh;
         }
 
@@ -40,54 +42,61 @@
             align-items: center;
             padding: 20px 0;
             border-bottom: 1px solid var(--border);
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
-        h1 { font-size: 1.8rem; color: var(--accent); letter-spacing: -1px; }
 
-        /* Navigation */
-        .tabs {
+        /* Navigation Tabs */
+        .tabs-nav {
             display: flex;
-            gap: 5px;
+            gap: 10px;
+            background: var(--card);
+            padding: 10px;
+            border-radius: 15px;
+            margin-bottom: 30px;
             overflow-x: auto;
-            margin-bottom: 25px;
-            padding-bottom: 10px;
+            border: 1px solid var(--border);
             scrollbar-width: none;
         }
-        .tab-btn {
-            background: var(--card);
-            border: 1px solid var(--border);
+        .tab-trigger {
+            background: transparent;
+            border: none;
             color: var(--text-dim);
-            padding: 10px 20px;
+            padding: 12px 24px;
             cursor: pointer;
             font-weight: 600;
-            border-radius: 12px;
+            border-radius: 10px;
             white-space: nowrap;
             transition: 0.2s;
         }
-        .tab-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+        .tab-trigger:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+        .tab-trigger.active { background: var(--accent); color: #000; }
 
-        /* Main Layout */
-        .tool-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        @media (min-width: 1024px) { .tool-grid { grid-template-columns: 350px 1fr; } }
+        .tab-pane { display: none; animation: fadeIn 0.3s ease; }
+        .tab-pane.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .side-panel { display: flex; flex-direction: column; gap: 20px; }
-        .main-panel { background: var(--card); border-radius: 16px; padding: 25px; border: 1px solid var(--border); min-height: 700px; }
+        /* Layout Grid */
+        .tool-layout { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        @media (min-width: 1024px) { .tool-layout { grid-template-columns: 320px 1fr; } }
 
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .main-view { background: var(--card); border-radius: 20px; padding: 30px; border: 1px solid var(--border); min-height: 600px; }
 
-        /* Form Elements */
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 20px; }
+
+        /* Controls */
         .input-group { margin-bottom: 15px; }
-        label { display: block; color: var(--text-dim); margin-bottom: 6px; font-size: 0.85rem; font-weight: 600; }
+        label { display: block; color: var(--text-dim); margin-bottom: 8px; font-size: 0.85rem; font-weight: bold; }
         input, select {
             width: 100%;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.3);
             border: 1px solid var(--border);
             color: var(--text);
             padding: 12px;
             border-radius: 10px;
             font-size: 1rem;
         }
-        input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2); }
+        input:focus { outline: none; border-color: var(--accent); }
 
         .btn {
             background: var(--accent);
@@ -97,43 +106,36 @@
             border-radius: 10px;
             font-weight: 700;
             cursor: pointer;
-            transition: 0.2s;
             width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            transition: 0.2s;
         }
-        .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
-        .btn-secondary { background: var(--border); color: var(--text); }
+        .btn:hover { filter: brightness(1.2); }
+        .btn-sec { background: var(--border); color: var(--text); }
 
-        /* Pagination Bar */
-        .pagination-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px;
-            background: rgba(0,0,0,0.1);
-            border-radius: 12px;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-        .page-controls { display: flex; align-items: center; gap: 10px; }
-        .page-num { font-weight: bold; padding: 0 10px; }
-
-        /* Level Cards */
-        .level-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
-        .level-item {
+        /* Components */
+        .pagination { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; }
+        
+        .level-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+        .level-card {
             background: rgba(255,255,255,0.03);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 15px;
+            padding: 20px;
             cursor: pointer;
             transition: 0.2s;
         }
-        .level-item:hover { border-color: var(--accent); background: rgba(255,255,255,0.06); }
-        .level-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .level-name { font-weight: bold; font-size: 1.1rem; color: var(--accent); }
+        .level-card:hover { border-color: var(--accent); transform: scale(1.02); }
+        .level-card h4 { color: var(--accent); margin-bottom: 5px; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 15px; color: var(--text-dim); border-bottom: 2px solid var(--border); }
+        td { padding: 15px; border-bottom: 1px solid var(--border); }
+        tr:hover td { background: rgba(255,255,255,0.03); }
+
+        /* Analytics Specific */
+        .stat-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; background: var(--purple); color: white; margin-top: 5px; }
+        .progress-bar { height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; margin: 10px 0; }
+        .progress-fill { height: 100%; background: var(--accent); transition: width 0.5s; }
 
         /* Settings Modal */
         #settingsModal {
@@ -141,498 +143,510 @@
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.8);
-            z-index: 100;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
             align-items: center;
             justify-content: center;
         }
-        .modal-content { background: var(--bg); width: 90%; max-width: 500px; padding: 30px; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
-        .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .theme-option { 
-            padding: 15px; 
-            border: 2px solid var(--border); 
-            border-radius: 12px; 
-            cursor: pointer; 
-            text-align: center;
-            font-weight: 600;
-        }
-        .theme-option.active { border-color: var(--accent); background: rgba(56, 189, 248, 0.1); }
+        .modal-body { background: var(--bg); border: 1px solid var(--border); padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; }
+        .theme-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .theme-btn { padding: 15px; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; text-align: center; }
+        .theme-btn:hover { border-color: var(--accent); }
 
-        /* Specific Table Styles */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; border-radius: 12px; overflow: hidden; }
-        th { text-align: left; padding: 15px; background: rgba(0,0,0,0.2); color: var(--text-dim); }
-        td { padding: 15px; border-bottom: 1px solid var(--border); }
-        tr:last-child td { border: none; }
-        tr:hover td { background: rgba(255,255,255,0.02); }
-
-        /* Loader */
-        .loading-spinner { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 40px auto; }
+        .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 50px auto; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-
         .hidden { display: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div>
-                <h1>🎯 NARROW HUB v2</h1>
-                <p style="color: var(--text-dim); font-size: 0.8rem;">Official API Integrated Analytics</p>
-            </div>
-            <button class="btn btn-secondary" style="width: auto;" onclick="toggleSettings()">⚙️ Settings</button>
-        </header>
 
-        <nav class="tabs" id="mainTabs">
-            <button class="tab-btn active" onclick="switchTab('tab-browse')">Browse</button>
-            <button class="tab-btn" onclick="switchTab('tab-official')">Official</button>
-            <button class="tab-btn" onclick="switchTab('tab-players')">Players</button>
-            <button class="tab-btn" onclick="switchTab('tab-leaderboards')">Leaderboards</button>
-            <button class="tab-btn" onclick="switchTab('tab-analyzer')">Analyzer</button>
-        </nav>
-
-        <!-- BROWSE TAB -->
-        <div id="tab-browse" class="tab-content active">
-            <div class="tool-grid">
-                <div class="side-panel">
-                    <div class="card">
-                        <h3>Filter & Search</h3>
-                        <div class="input-group">
-                            <label>Sort By</label>
-                            <select id="browseFilter" onchange="loadLevels(0)">
-                                <option value="popular">Popular</option>
-                                <option value="new">Newest</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Keyword Search</label>
-                            <input type="text" id="browseSearch" placeholder="Level name...">
-                        </div>
-                        <div class="input-group">
-                            <label>Search by Creator</label>
-                            <input type="text" id="creatorSearch" placeholder="Creator username...">
-                        </div>
-                        <button class="btn" onclick="loadLevels(0)">Refresh Results</button>
-                    </div>
-
-                    <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                            <h3>Autoload</h3>
-                            <input type="checkbox" id="autoloadToggle" style="width: auto;" onchange="handleAutoload()">
-                        </div>
-                        <label>Interval (Seconds)</label>
-                        <select id="autoloadInterval">
-                            <option value="2000">2s</option>
-                            <option value="5000" selected>5s</option>
-                            <option value="10000">10s</option>
-                        </select>
-                        <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 10px;">Automatically jumps to the next page of results.</p>
-                    </div>
-                </div>
-
-                <div class="main-panel">
-                    <div class="pagination-bar">
-                        <button class="btn btn-secondary" style="width: auto;" onclick="changePage(-1)">← Previous</button>
-                        <div class="page-controls">
-                            Page <span id="currentPageNum" class="page-num">0</span>
-                        </div>
-                        <button class="btn btn-secondary" style="width: auto;" onclick="changePage(1)">Next →</button>
-                    </div>
-                    <div id="browseResults" class="level-list"></div>
-                </div>
-            </div>
+<div class="container">
+    <header>
+        <div>
+            <h1 style="color: var(--accent)">NARROW HUB PRO</h1>
+            <p style="color: var(--text-dim); font-size: 0.8rem;">Official API Interface</p>
         </div>
+        <button class="btn btn-sec" style="width: auto;" onclick="toggleSettings()">⚙️ Settings</button>
+    </header>
 
-        <!-- OFFICIAL TAB -->
-        <div id="tab-official" class="tab-content">
-            <div class="main-panel">
-                <div id="officialView">
-                    <h2 style="margin-bottom: 20px;">Official World Records</h2>
-                    <div id="officialResults" class="level-list"></div>
-                </div>
-                <div id="officialDetails" class="hidden">
-                    <!-- Detail View -->
-                </div>
-            </div>
-        </div>
+    <nav class="tabs-nav">
+        <button class="tab-trigger active" onclick="showTab('browse')">Browse Custom</button>
+        <button class="tab-trigger" onclick="showTab('official')">Official Records</button>
+        <button class="tab-trigger" onclick="showTab('players')">Profile Search</button>
+        <button class="tab-trigger" onclick="showTab('rankings')">Global Rankings</button>
+        <button class="tab-trigger" onclick="showTab('analytics')">Insights & Stats</button>
+        <button class="tab-trigger" onclick="showTab('analyzer')">Run Analyzer</button>
+    </nav>
 
-        <!-- PLAYER TAB -->
-        <div id="tab-players" class="tab-content">
-            <div class="tool-grid">
-                <div class="side-panel">
-                    <div class="card">
-                        <h3>Profile Search</h3>
-                        <input type="text" id="playerSearchInput" placeholder="Username...">
-                        <button class="btn" style="margin-top: 10px;" onclick="searchPlayer()">View Stats</button>
-                    </div>
-                </div>
-                <div class="main-panel" id="playerResults">
-                    <p style="color: var(--text-dim)">Search a player to see trophies, streaks, and ranking.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- LEADERBOARDS TAB -->
-        <div id="tab-leaderboards" class="tab-content">
-            <div class="main-panel">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2>Global Rankings</h2>
-                    <button class="btn" style="width: auto;" onclick="loadGlobalLB()">Refresh All</button>
-                </div>
-                <div id="lbResults"></div>
-            </div>
-        </div>
-
-        <!-- ANALYZER TAB -->
-        <div id="tab-analyzer" class="tab-content">
-            <div class="tool-grid">
-                <div class="side-panel">
-                    <div class="card">
-                        <h3>Run Verification</h3>
-                        <input type="number" id="runIdInput" placeholder="Run ID...">
-                        <button class="btn" style="margin-top: 10px;" onclick="analyzeRun()">Verify Data</button>
-                    </div>
-                </div>
-                <div class="main-panel" id="analyzerResults"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SETTINGS MODAL -->
-    <div id="settingsModal" onclick="closeModal(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <h2 style="margin-bottom: 20px;">Appearance Settings</h2>
-            <div class="theme-grid">
-                <div class="theme-option" onclick="setTheme('default')">Deep Slate</div>
-                <div class="theme-option" onclick="setTheme('pitch-black')">Pitch Black</div>
-                <div class="theme-option" onclick="setTheme('cyberpunk')">Cyberpunk</div>
-                <div class="theme-option" onclick="setTheme('light')">Pure Light</div>
-                <div class="theme-option" onclick="setTheme('crimson')">Crimson</div>
-                <div class="theme-option" onclick="setTheme('forest')">Forest</div>
-            </div>
-            <button class="btn" style="margin-top: 30px;" onclick="toggleSettings()">Save & Close</button>
-        </div>
-    </div>
-
-    <script>
-        const API_BASE = 'https://api.narrowarrow.xyz';
-        const PROXY = 'https://narrow-hub.wilmer-v-123321.workers.dev/?url=';
-        
-        let currentPage = 0;
-        let autoloadTimer = null;
-
-        const OFFICIAL_LEVELS = [
-            "Arrow Factory", "Attractive Curves", "Blue Slides", "Chain Reaction", 
-            "Chaotic Rally", "Colossal R", "Diamond Rally", "Dodgy Place", 
-            "Energex", "Fast and Slow", "Green Cross", "Green Eyes", 
-            "Highspeed Madness", "Level 1", "Level Icy", "Maze Rally", 
-            "Polar Drift", "Polar Rally", "Speedrun Highway", "Spinning Square", 
-            "Square Rally", "Stopzone Cycle", "Turnpike Drift", "Windmill Land"
-        ];
-
-        // --- THEME ENGINE ---
-        function setTheme(theme) {
-            document.body.className = theme === 'default' ? '' : `theme-${theme}`;
-            localStorage.setItem('nh-theme', theme);
-            document.querySelectorAll('.theme-option').forEach(opt => {
-                opt.classList.toggle('active', opt.textContent.toLowerCase().includes(theme.replace('-',' ')));
-            });
-        }
-
-        function toggleSettings() {
-            const modal = document.getElementById('settingsModal');
-            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        function closeModal(e) {
-            if(e.target.id === 'settingsModal') toggleSettings();
-        }
-
-        // --- NAVIGATION ---
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            const btn = document.querySelector(`button[onclick="switchTab('${tabId}')"]`);
-            if (btn) btn.classList.add('active');
-            
-            if (tabId === 'tab-browse' && !document.getElementById('browseResults').innerHTML) loadLevels(0);
-            if (tabId === 'tab-official' && !document.getElementById('officialResults').innerHTML) loadOfficialList();
-        }
-
-        async function fetchAPI(path) {
-            try {
-                const response = await fetch(PROXY + encodeURIComponent(API_BASE + path));
-                if (!response.ok) throw new Error('API failure');
-                return await response.json();
-            } catch (e) {
-                console.error("API Error:", e);
-                return null;
-            }
-        }
-
-        // --- LEVEL BROWSER ---
-        async function loadLevels(page) {
-            currentPage = page;
-            document.getElementById('currentPageNum').innerText = currentPage;
-            const container = document.getElementById('browseResults');
-            const filter = document.getElementById('browseFilter').value;
-            const query = document.getElementById('browseSearch').value.toLowerCase();
-            const creator = document.getElementById('creatorSearch').value.toLowerCase();
-            
-            container.innerHTML = '<div class="loading-spinner"></div>';
-
-            const levels = await fetchAPI(`/published-levels?filter=${filter}&page=${currentPage}`);
-            if (!levels) return container.innerHTML = "Failed to load.";
-
-            let filtered = levels;
-            if (query) filtered = filtered.filter(l => l.name.toLowerCase().includes(query));
-            if (creator) filtered = filtered.filter(l => l.creator_name.toLowerCase().includes(creator));
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<p style="grid-column: 1/-1; text-align: center;">No levels found on page ${currentPage}.</p>`;
-                return;
-            }
-
-            container.innerHTML = filtered.map(l => `
-                <div class="level-item" onclick="viewLevelDetail('${l.level_id}')">
-                    <div class="level-header">
-                        <span class="level-name">${l.name}</span>
-                        <span style="font-size: 0.7rem; color: var(--text-dim)">#${l.level_id}</span>
-                    </div>
-                    <div style="font-size: 0.85rem; margin-bottom: 10px;">
-                        by <span style="color: var(--accent)" onclick="event.stopPropagation(); goToPlayer('${l.creator_name}')">${l.creator_name}</span>
-                    </div>
-                    <div style="display: flex; gap: 15px; font-size: 0.8rem; color: var(--text-dim);">
-                        <span>❤️ ${l.like_count}</span>
-                        <span>🎮 ${l.play_count}</span>
-                        <span style="color: var(--text)">🏆 ${l.world_record?.completion_time || 'N/A'}s</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function changePage(delta) {
-            currentPage = Math.max(0, currentPage + delta);
-            loadLevels(currentPage);
-        }
-
-        // --- AUTOLOAD ---
-        function handleAutoload() {
-            const isEnabled = document.getElementById('autoloadToggle').checked;
-            const interval = parseInt(document.getElementById('autoloadInterval').value);
-            
-            if (autoloadTimer) clearInterval(autoloadTimer);
-            
-            if (isEnabled) {
-                autoloadTimer = setInterval(() => {
-                    changePage(1);
-                }, interval);
-            }
-        }
-
-        // --- LEVEL DETAILS (NEW FEATURE) ---
-        async function viewLevelDetail(levelId) {
-            const container = document.getElementById('browseResults');
-            const nav = document.querySelector('.pagination-bar');
-            nav.classList.add('hidden');
-            container.innerHTML = '<div class="loading-spinner"></div>';
-            
-            // Note: Official levels use names, Published use IDs
-            const data = await fetchAPI(`/published-level-details/${levelId}`);
-            if (!data) return loadLevels(currentPage);
-
-            container.style.display = 'block';
-            container.innerHTML = `
+    <!-- BROWSE CUSTOM TAB -->
+    <div id="tab-browse" class="tab-pane active">
+        <div class="tool-layout">
+            <div class="sidebar">
                 <div class="card">
-                    <button class="btn btn-secondary" style="width: auto; margin-bottom: 20px;" onclick="closeDetails()">← Back to Browser</button>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h1>${data.name}</h1>
-                        <span style="color: var(--accent); font-weight: bold;">WR: ${data.world_record?.completion_time || 'N/A'}s</span>
+                    <h3>Search Filters</h3>
+                    <div class="input-group">
+                        <label>Sort</label>
+                        <select id="browseSort" onchange="loadCustom(0)">
+                            <option value="popular">Popular</option>
+                            <option value="new">Newest</option>
+                        </select>
                     </div>
-                    <p style="margin: 10px 0; color: var(--text-dim);">Level ID: ${data.level_id} | Created by: <span style="color: var(--accent); cursor: pointer;" onclick="goToPlayer('${data.creator_name}')">${data.creator_name}</span></p>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0;">
-                        <div class="card" style="text-align: center;"><h3>${data.play_count}</h3><small>Plays</small></div>
-                        <div class="card" style="text-align: center;"><h3>${data.like_count}</h3><small>Likes</small></div>
-                        <div class="card" style="text-align: center;"><h3>${data.total_attempts || 'N/A'}</h3><small>Total Attempts</small></div>
+                    <div class="input-group">
+                        <label>Level Name</label>
+                        <input type="text" id="levelNameSearch" placeholder="Find a map...">
                     </div>
-                    
-                    <h3 style="margin-top: 30px;">Top 50 Leaderboard</h3>
-                    <div id="levelLB">Loading LB...</div>
+                    <div class="input-group">
+                        <label>Creator Name</label>
+                        <input type="text" id="creatorSearch" placeholder="Find a user...">
+                    </div>
+                    <button class="btn" onclick="loadCustom(0)">Search</button>
                 </div>
-            `;
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3>Autoload</h3>
+                        <input type="checkbox" id="autoCheck" onchange="handleAutoload()" style="width: 20px; height: 20px;">
+                    </div>
+                    <label>Interval (Seconds)</label>
+                    <input type="number" id="autoTime" value="5" min="0.1" step="0.1" placeholder="e.g. 0.2">
+                    <p style="font-size: 0.7rem; color: var(--text-dim); margin-top: 5px;">Supports sub-second speeds (0.1s minimum)</p>
+                </div>
+            </div>
+            <div class="main-view">
+                <div class="pagination">
+                    <button class="btn btn-sec" style="width: auto;" onclick="changePage(-1)">← Prev</button>
+                    <span id="pageDisplay" style="font-weight: bold;">Page 0</span>
+                    <button class="btn btn-sec" style="width: auto;" onclick="changePage(1)">Next →</button>
+                </div>
+                <div id="browseList" class="level-grid"></div>
+            </div>
+        </div>
+    </div>
 
-            const lb = await fetchAPI(`/leaderboard?levelId=${levelId}`);
-            const lbDiv = document.getElementById('levelLB');
-            if (!lb || lb.length === 0) lbDiv.innerHTML = "No runs recorded yet.";
-            else {
-                lbDiv.innerHTML = `<table><thead><tr><th>#</th><th>Player</th><th>Time</th><th>Arrow</th></tr></thead><tbody>
-                    ${lb.map((r, i) => `<tr><td>${i+1}</td><td onclick="goToPlayer('${r.username}')" style="color: var(--accent); cursor:pointer">${r.username}</td><td>${r.completion_time}s</td><td>${r.arrow_name}</td></tr>`).join('')}
-                </tbody></table>`;
+    <!-- OFFICIAL RECORDS TAB -->
+    <div id="tab-official" class="tab-pane">
+        <div class="main-view" id="officialContainer">
+            <h2 style="margin-bottom: 20px;">World Records: Official Maps</h2>
+            <div id="officialList" class="level-grid"></div>
+        </div>
+    </div>
+
+    <!-- PLAYERS TAB -->
+    <div id="tab-players" class="tab-pane">
+        <div class="tool-layout">
+            <div class="sidebar">
+                <div class="card">
+                    <h3>Lookup User</h3>
+                    <input type="text" id="userInput" placeholder="Type username...">
+                    <button class="btn" style="margin-top: 10px;" onclick="loadUser()">View Stats</button>
+                </div>
+            </div>
+            <div class="main-view" id="userResult">
+                <p style="color: var(--text-dim)">Enter a username to view trophy count, league, and performance stats.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- RANKINGS TAB -->
+    <div id="tab-rankings" class="tab-pane">
+        <div class="main-view">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Global Leaderboard</h2>
+                <button class="btn btn-sec" style="width: auto;" onclick="loadGlobal()">Refresh</button>
+            </div>
+            <div id="globalLB"></div>
+        </div>
+    </div>
+
+    <!-- ANALYTICS TAB -->
+    <div id="tab-analytics" class="tab-pane">
+        <div class="tool-layout">
+            <div class="sidebar">
+                <div class="card">
+                    <h3>Insight Engine</h3>
+                    <p style="font-size: 0.8rem; margin-bottom: 15px; color: var(--text-dim);">Global metadata analysis of arrow usage and player performance.</p>
+                    <button class="btn" onclick="generateInsights()">Run Meta Analysis</button>
+                </div>
+                <div class="card">
+                    <h4>Top Arrows</h4>
+                    <div id="arrowUsageSummary"></div>
+                </div>
+            </div>
+            <div class="main-view">
+                <h2>Arrow & Performance Analytics</h2>
+                <div id="analyticsMain" style="margin-top: 20px;">
+                    <p style="color: var(--text-dim)">Run meta-analysis to generate global arrow usage statistics and win-rate estimates.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ANALYZER TAB -->
+    <div id="tab-analyzer" class="tab-pane">
+        <div class="tool-layout">
+            <div class="sidebar">
+                <div class="card">
+                    <h3>Analyze Run</h3>
+                    <input type="number" id="runIdInput" placeholder="Enter Run ID...">
+                    <button class="btn" style="margin-top: 10px;" onclick="analyzeRun()">Verify</button>
+                </div>
+            </div>
+            <div class="main-view" id="runResult">
+                <p style="color: var(--text-dim)">Input a Run ID to see verification status and detailed metrics.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="settingsModal" onclick="toggleSettings()">
+    <div class="modal-body" onclick="event.stopPropagation()">
+        <h3>Theme Settings</h3>
+        <div class="theme-list">
+            <div class="theme-btn" onclick="setTheme('default')">Deep Slate</div>
+            <div class="theme-btn" onclick="setTheme('pitch-black')">Pitch Black</div>
+            <div class="theme-btn" onclick="setTheme('cyberpunk')">Cyberpunk</div>
+            <div class="theme-btn" onclick="setTheme('crimson')">Crimson</div>
+        </div>
+        <button class="btn" style="margin-top: 20px;" onclick="toggleSettings()">Close</button>
+    </div>
+</div>
+
+<script>
+    const API = 'https://api.narrowarrow.xyz';
+    const PROXY = 'https://narrow-hub.wilmer-v-123321.workers.dev/?url=';
+    
+    let currentPage = 0;
+    let autoInterval = null;
+
+    const OFFICIALS = [
+        "Arrow Factory", "Attractive Curves", "Blue Slides", "Chain Reaction", 
+        "Chaotic Rally", "Colossal R", "Diamond Rally", "Dodgy Place", 
+        "Energex", "Fast and Slow", "Green Cross", "Green Eyes", 
+        "Highspeed Madness", "Level 1", "Level Icy", "Maze Rally", 
+        "Polar Drift", "Polar Rally", "Speedrun Highway", "Spinning Square", 
+        "Square Rally", "Stopzone Cycle", "Turnpike Drift", "Windmill Land"
+    ];
+
+    // --- TAB SYSTEM ---
+    function showTab(tab) {
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-trigger').forEach(t => t.classList.remove('active'));
+        
+        document.getElementById(`tab-${tab}`).classList.add('active');
+        const trigger = document.querySelector(`.tab-trigger[onclick="showTab('${tab}')"]`);
+        if(trigger) trigger.classList.add('active');
+
+        // Logic for auto-loading specific tabs
+        if(tab === 'official' && !document.getElementById('officialList').innerHTML) loadOfficial();
+        if(tab === 'rankings' && !document.getElementById('globalLB').innerHTML) loadGlobal();
+        if(tab === 'analytics' && !document.getElementById('arrowUsageSummary').innerHTML) generateInsights();
+    }
+
+    // --- API HELPER ---
+    async function callAPI(path) {
+        try {
+            const res = await fetch(PROXY + encodeURIComponent(API + path));
+            return await res.json();
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
+    }
+
+    // --- BROWSE CUSTOM ---
+    async function loadCustom(page) {
+        currentPage = page;
+        document.getElementById('pageDisplay').innerText = `Page ${currentPage}`;
+        const container = document.getElementById('browseList');
+        const sort = document.getElementById('browseSort').value;
+        const qLevel = document.getElementById('levelNameSearch').value.toLowerCase();
+        const qUser = document.getElementById('creatorSearch').value.toLowerCase();
+
+        container.innerHTML = '<div class="loader"></div>';
+        const data = await callAPI(`/published-levels?filter=${sort}&page=${currentPage}`);
+        if(!data) return container.innerHTML = "API error.";
+
+        let filtered = data;
+        if(qLevel) filtered = filtered.filter(l => l.name.toLowerCase().includes(qLevel));
+        if(qUser) filtered = filtered.filter(l => l.creator_name.toLowerCase().includes(qUser));
+
+        container.innerHTML = filtered.map(l => `
+            <div class="level-card" onclick="viewLeaderboard('${l.level_id}', '${l.name}')">
+                <h4>${l.name}</h4>
+                <p style="font-size: 0.8rem; margin-bottom: 10px;">by <span style="color: var(--accent)">${l.creator_name}</span></p>
+                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; opacity: 0.8;">
+                    <span>🎮 ${l.play_count}</span>
+                    <span style="color: var(--text)">🏆 ${l.world_record?.completion_time || '--'}s</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function changePage(delta) {
+        currentPage = Math.max(0, currentPage + delta);
+        loadCustom(currentPage);
+    }
+
+    function handleAutoload() {
+        const active = document.getElementById('autoCheck').checked;
+        const seconds = parseFloat(document.getElementById('autoTime').value) || 5;
+        if(autoInterval) clearInterval(autoInterval);
+        if(active) {
+            // Safe clamp to 0.1s
+            const ms = Math.max(100, seconds * 1000);
+            autoInterval = setInterval(() => changePage(1), ms);
+        }
+    }
+
+    // --- ANALYTICS ENGINE (NEW) ---
+    async function generateInsights() {
+        const summaryDiv = document.getElementById('arrowUsageSummary');
+        const mainDiv = document.getElementById('analyticsMain');
+        
+        summaryDiv.innerHTML = '<div class="loader" style="width:20px; height:20px;"></div>';
+        mainDiv.innerHTML = '<div class="loader"></div>';
+
+        // Sample data from multiple pages to get arrow meta
+        const p1 = await callAPI('/published-levels?filter=popular&page=0');
+        const p2 = await callAPI('/published-levels?filter=new&page=0');
+        
+        if(!p1) return mainDiv.innerHTML = "Analysis failed.";
+
+        const levels = [...p1, ...(p2 || [])];
+        const arrows = {};
+        let totalPlays = 0;
+
+        levels.forEach(l => {
+            if(l.world_record?.arrow_name) {
+                const a = l.world_record.arrow_name;
+                arrows[a] = (arrows[a] || 0) + 1;
             }
-        }
+            totalPlays += (l.play_count || 0);
+        });
 
-        function closeDetails() {
-            document.getElementById('browseResults').style.display = 'grid';
-            document.querySelector('.pagination-bar').classList.remove('hidden');
-            loadLevels(currentPage);
-        }
+        const sortedArrows = Object.entries(arrows).sort((a,b) => b[1] - a[1]);
+        
+        summaryDiv.innerHTML = sortedArrows.slice(0, 3).map(([name, count]) => `
+            <div style="margin-bottom: 5px; font-size: 0.8rem;">
+                ${name}: <strong>${count} WRs</strong>
+            </div>
+        `).join('');
 
-        // --- OFFICIAL LEVELS ---
-        async function loadOfficialList() {
-            const container = document.getElementById('officialResults');
-            container.innerHTML = '<div class="loading-spinner"></div>';
-            
-            const promises = OFFICIAL_LEVELS.map(name => fetchAPI(`/level-details/${encodeURIComponent(name)}`));
-            const results = await Promise.allSettled(promises);
+        let html = `
+            <h3>Global Arrow Usage (WR Meta)</h3>
+            <div style="margin: 20px 0;">
+        `;
 
-            container.innerHTML = results.map((res, idx) => {
-                if (res.status === 'fulfilled' && res.value) {
-                    const data = res.value;
-                    const wr = data.worldRecord;
-                    return `
-                        <div class="level-item" onclick="viewOfficialLB('${OFFICIAL_LEVELS[idx]}')">
-                            <div class="level-name">${OFFICIAL_LEVELS[idx]}</div>
-                            <div style="font-size: 0.8rem; margin: 8px 0;">WR: <span style="color: var(--accent)">${wr.username}</span></div>
-                            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; opacity: 0.7;">
-                                <span>${wr.completion_time}s</span>
-                                <span>Runs: ${data.runCount || 0}</span>
-                            </div>
-                        </div>
-                    `;
-                }
-                return '';
-            }).join('');
-        }
-
-        async function viewOfficialLB(name) {
-            const main = document.getElementById('officialView');
-            const detail = document.getElementById('officialDetails');
-            main.classList.add('hidden');
-            detail.classList.remove('hidden');
-            detail.innerHTML = '<div class="loading-spinner"></div>';
-
-            const lb = await fetchAPI(`/leaderboard/${encodeURIComponent(name)}`);
-            detail.innerHTML = `
-                <button class="btn btn-secondary" style="width: auto; margin-bottom: 20px;" onclick="closeOfficialDetail()">← Back to Official</button>
-                <h2>${name} Leaderboard</h2>
-                <table><thead><tr><th>Rank</th><th>Player</th><th>Time</th><th>Verification</th></tr></thead><tbody>
-                    ${lb.map((r, i) => `
-                        <tr>
-                            <td>#${i+1}</td>
-                            <td onclick="goToPlayer('${r.username}')" style="color: var(--accent); cursor: pointer;">${r.username}</td>
-                            <td>${r.completion_time}s</td>
-                            <td>${r.verified ? '✅' : '❌'}</td>
-                        </tr>
-                    `).join('')}
-                </tbody></table>
+        sortedArrows.forEach(([name, count]) => {
+            const pct = (count / sortedArrows.reduce((a,b) => a + b[1], 0) * 100).toFixed(1);
+            html += `
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                        <span>${name}</span>
+                        <span style="color: var(--accent)">${pct}% of Records</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: ${pct}%"></div></div>
+                </div>
             `;
+        });
+
+        html += `</div>
+            <div class="card" style="border-left: 5px solid var(--purple)">
+                <h3>Level Analytics Summary</h3>
+                <p style="margin-top: 10px;">Analyzed ${levels.length} maps with ${totalPlays.toLocaleString()} total plays.</p>
+                <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>Avg. Play Count: <strong>${Math.floor(totalPlays/levels.length)}</strong></div>
+                    <div>Meta Consistency: <strong>${(sortedArrows[0][1] / levels.length * 100).toFixed(0)}%</strong></div>
+                </div>
+            </div>
+        `;
+
+        mainDiv.innerHTML = html;
+    }
+
+    // --- OFFICIAL RECORDS ---
+    async function loadOfficial() {
+        const container = document.getElementById('officialList');
+        container.innerHTML = '<div class="loader"></div>';
+
+        const promises = OFFICIALS.map(name => callAPI(`/level-details/${encodeURIComponent(name)}`));
+        const results = await Promise.allSettled(promises);
+
+        container.innerHTML = results.map((res, i) => {
+            if(res.status === 'fulfilled' && res.value) {
+                const d = res.value;
+                return `
+                    <div class="level-card" onclick="viewLeaderboard('${OFFICIALS[i]}', '${OFFICIALS[i]}', true)">
+                        <h4>${OFFICIALS[i]}</h4>
+                        <div style="font-size: 0.8rem; margin: 10px 0;">WR: <span style="color: var(--accent)">${d.worldRecord.username}</span></div>
+                        <div style="font-weight: bold;">${d.worldRecord.completion_time}s</div>
+                        <div class="stat-badge">${d.worldRecord.arrow_name}</div>
+                    </div>
+                `;
+            }
+            return '';
+        }).join('');
+    }
+
+    async function viewLeaderboard(id, name, isOfficial = false) {
+        const browseView = document.getElementById('browseList');
+        const offView = document.getElementById('officialContainer');
+        const activeContainer = isOfficial ? offView : document.getElementById('tab-browse').querySelector('.main-view');
+        
+        const oldContent = activeContainer.innerHTML;
+        activeContainer.innerHTML = '<div class="loader"></div>';
+        
+        const endpoint = isOfficial ? `/leaderboard/${encodeURIComponent(name)}` : `/leaderboard?levelId=${id}`;
+        const data = await callAPI(endpoint);
+        
+        if(!data) {
+            activeContainer.innerHTML = oldContent;
+            return;
         }
 
-        function closeOfficialDetail() {
-            document.getElementById('officialView').classList.remove('hidden');
-            document.getElementById('officialDetails').classList.add('hidden');
-        }
+        let html = `
+            <div style="margin-bottom: 20px;">
+                <button class="btn btn-sec" style="width: auto;" onclick="refreshTab('${isOfficial ? 'official' : 'browse'}')">← Back</button>
+                <h2 style="margin-top: 20px;">${name} Leaderboard</h2>
+            </div>
+            <table><thead><tr><th>#</th><th>Player</th><th>Time</th><th>Arrow</th><th>Verify</th></tr></thead><tbody>
+        `;
+        
+        data.forEach((r, i) => {
+            html += `
+                <tr>
+                    <td>${i+1}</td>
+                    <td style="color: var(--accent); cursor: pointer;" onclick="goToUser('${r.username}')">${r.username}</td>
+                    <td>${r.completion_time}s</td>
+                    <td><small>${r.arrow_name || '???'}</small></td>
+                    <td>${r.verified ? '✅' : '❌'}</td>
+                </tr>
+            `;
+        });
+        
+        activeContainer.innerHTML = html + '</tbody></table>';
+    }
 
-        // --- PLAYERS ---
-        async function searchPlayer() {
-            const user = document.getElementById('playerSearchInput').value.trim();
-            const container = document.getElementById('playerResults');
-            if (!user) return;
-            container.innerHTML = '<div class="loading-spinner"></div>';
-            const data = await fetchAPI(`/user/${user}`);
-            if (!data) return container.innerHTML = "Player not found.";
+    function refreshTab(tab) {
+        if(tab === 'browse') loadCustom(currentPage);
+        if(tab === 'official') loadOfficial();
+    }
 
-            container.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    // --- PLAYER SEARCH ---
+    async function loadUser() {
+        const user = document.getElementById('userInput').value.trim();
+        const container = document.getElementById('userResult');
+        if(!user) return;
+        container.innerHTML = '<div class="loader"></div>';
+        
+        const data = await callAPI(`/user/${user}`);
+        if(!data) return container.innerHTML = "User not found.";
+
+        const winRate = ((data.total_wins / data.total_runs) * 100 || 0).toFixed(1);
+
+        container.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h1 style="color: var(--accent)">${data.user.username}</h1>
+                    <p style="color: var(--text-dim)">League: ${data.league}</p>
+                </div>
+                <div style="text-align: right">
+                    <h2 style="color: var(--accent)">🏆 ${data.trophies}</h2>
+                    <small>Ranked #${data.rank || '???'}</small>
+                </div>
+            </div>
+            <div class="card" style="margin: 20px 0;">${data.user.bio || 'No bio provided.'}</div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                <div class="card" style="text-align: center;"><h3>${data.win_streak}</h3><small>Current Streak</small></div>
+                <div class="card" style="text-align: center;"><h3>${winRate}%</h3><small>Win Rate</small></div>
+                <div class="card" style="text-align: center;"><h3>${data.maps_completed}</h3><small>Completed</small></div>
+                <div class="card" style="text-align: center;"><h3>${data.total_runs}</h3><small>Total Runs</small></div>
+            </div>
+        `;
+    }
+
+    function goToUser(name) {
+        document.getElementById('userInput').value = name;
+        showTab('players');
+        loadUser();
+    }
+
+    // --- GLOBAL LB ---
+    async function loadGlobal() {
+        const container = document.getElementById('globalLB');
+        container.innerHTML = '<div class="loader"></div>';
+        const data = await callAPI('/leaderboard/trophies');
+        if(!data) return;
+
+        let html = `<table><thead><tr><th>Rank</th><th>Player</th><th>Trophies</th><th>League</th></tr></thead><tbody>`;
+        data.forEach((p, i) => {
+            html += `
+                <tr onclick="goToUser('${p.username}')" style="cursor: pointer;">
+                    <td>#${i+1}</td>
+                    <td style="color: var(--accent); font-weight: bold;">${p.username}</td>
+                    <td>${p.trophies}</td>
+                    <td>${p.league}</td>
+                </tr>
+            `;
+        });
+        container.innerHTML = html + '</tbody></table>';
+    }
+
+    // --- ANALYZER ---
+    async function analyzeRun() {
+        const id = document.getElementById('runIdInput').value;
+        const container = document.getElementById('runResult');
+        if(!id) return;
+        container.innerHTML = '<div class="loader"></div>';
+        
+        const data = await callAPI(`/runs/${id}`);
+        if(!data) return container.innerHTML = "Run ID not found.";
+
+        container.innerHTML = `
+            <div class="card" style="border-left: 8px solid ${data.verified ? 'var(--success)' : 'var(--error)'}">
+                <h2>Run #${id} Details</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
                     <div>
-                        <h1 style="color: var(--accent)">${data.user.username}</h1>
-                        <span class="badge" style="background: var(--border); padding: 4px 10px; border-radius: 6px;">${data.league}</span>
+                        <p><strong>Verified:</strong> ${data.verified ? '✅' : '❌'}</p>
+                        <p><strong>Player:</strong> <span style="color: var(--accent); cursor: pointer;" onclick="goToUser('${data.username}')">${data.username}</span></p>
+                        <p><strong>Map:</strong> ${data.mapName}</p>
                     </div>
-                    <div style="text-align: right;">
-                        <h2 style="color: var(--accent)">🏆 ${data.trophies}</h2>
-                        <small style="color: var(--text-dim)">Global Rank: #${data.rank || '???'}</small>
-                    </div>
-                </div>
-                <div class="card" style="margin-bottom: 15px;">
-                    <p>${data.user.bio || 'This user prefers to keep a low profile.'}</p>
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;">
-                    <div class="card"><h4>${data.win_streak}</h4><small>Win Streak</small></div>
-                    <div class="card"><h4>${data.maps_completed}</h4><small>Completed</small></div>
-                    <div class="card"><h4>${data.total_runs}</h4><small>Total Runs</small></div>
-                    <div class="card"><h4>${data.published_levels_count || 0}</h4><small>Published</small></div>
-                </div>
-            `;
-        }
-
-        function goToPlayer(user) {
-            document.getElementById('playerSearchInput').value = user;
-            switchTab('tab-players');
-            searchPlayer();
-        }
-
-        // --- GLOBAL LB ---
-        async function loadGlobalLB() {
-            const container = document.getElementById('lbResults');
-            container.innerHTML = '<div class="loading-spinner"></div>';
-            const data = await fetchAPI('/leaderboard/trophies');
-            if (!data) return;
-
-            container.innerHTML = `<table><thead><tr><th>Rank</th><th>Player</th><th>Trophies</th><th>League</th></tr></thead><tbody>
-                ${data.map((p, i) => `
-                    <tr onclick="goToPlayer('${p.username}')" style="cursor: pointer">
-                        <td>#${i+1}</td>
-                        <td style="color: var(--accent); font-weight: bold;">${p.username}</td>
-                        <td>${p.trophies}</td>
-                        <td>${p.league}</td>
-                    </tr>
-                `).join('')}
-            </tbody></table>`;
-        }
-
-        // --- ANALYZER ---
-        async function analyzeRun() {
-            const id = document.getElementById('runIdInput').value;
-            const container = document.getElementById('analyzerResults');
-            if (!id) return;
-            container.innerHTML = '<div class="loading-spinner"></div>';
-            const data = await fetchAPI(`/runs/${id}`);
-            if (!data) return container.innerHTML = "Run not found.";
-
-            container.innerHTML = `
-                <div class="card" style="border-left: 8px solid ${data.verified ? '#22c55e' : '#ef4444'}">
-                    <h2>Run #${id} [${data.verified ? 'VERIFIED' : 'UNVERIFIED'}]</h2>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
-                        <div>
-                            <p><strong>Player:</strong> <span style="color: var(--accent); cursor: pointer;" onclick="goToPlayer('${data.username}')">${data.username}</span></p>
-                            <p><strong>Map:</strong> ${data.mapName}</p>
-                            <p><strong>Arrow:</strong> ${data.arrow_name}</p>
-                        </div>
-                        <div>
-                            <p><strong>Time:</strong> ${data.completion_time}s</p>
-                            <p><strong>Inputs:</strong> ${data.input_count}</p>
-                            <p><strong>Date:</strong> ${new Date(data.date).toLocaleDateString()}</p>
-                        </div>
+                    <div>
+                        <p><strong>Time:</strong> ${data.completion_time}s</p>
+                        <p><strong>Inputs:</strong> ${data.input_count}</p>
+                        <p><strong>Arrow:</strong> ${data.arrow_name}</p>
                     </div>
                 </div>
-            `;
-        }
+            </div>
+        `;
+    }
 
-        window.onload = () => {
-            const savedTheme = localStorage.getItem('nh-theme');
-            if (savedTheme) setTheme(savedTheme);
-            loadLevels(0);
+    // --- SETTINGS & THEMES ---
+    function toggleSettings() {
+        const m = document.getElementById('settingsModal');
+        m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+    }
+    function setTheme(t) {
+        document.body.className = t === 'default' ? '' : `theme-${t}`;
+        localStorage.setItem('nh-theme', t);
+    }
 
-            document.querySelectorAll('input').forEach(input => {
-                input.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        const card = input.closest('.card');
-                        const btn = card ? card.querySelector('.btn') : null;
-                        if (btn) btn.click();
-                    }
-                });
+    window.onload = () => {
+        const saved = localStorage.getItem('nh-theme');
+        if(saved) setTheme(saved);
+        loadCustom(0);
+        
+        // Enter key listeners
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if(e.key === 'Enter') {
+                    const btn = input.parentElement.querySelector('button');
+                    if(btn) btn.click();
+                }
             });
-        };
-    </script>
+        });
+    };
+</script>
+
 </body>
 </html>
