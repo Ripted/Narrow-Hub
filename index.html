@@ -78,7 +78,7 @@
         }
 
         .side-panel { display: flex; flex-direction: column; gap: 20px; }
-        .main-panel { background: var(--card-bg); border-radius: 12px; padding: 25px; border: 1px solid var(--border); min-height: 600px; }
+        .main-panel { background: var(--card-bg); border-radius: 12px; padding: 25px; border: 1px solid var(--border); min-height: 600px; position: relative; }
 
         /* UI Elements */
         .card { 
@@ -112,9 +112,26 @@
             cursor: pointer;
             transition: filter 0.2s;
             width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .btn:hover { filter: brightness(1.1); }
         .btn-secondary { background: var(--border); color: white; margin-top: 10px; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Pagination UI */
+        .pagination-ctrl {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            gap: 15px;
+        }
+        .page-indicator { font-weight: 600; color: var(--accent); }
 
         /* Data Display */
         .results-container { margin-top: 20px; }
@@ -179,7 +196,7 @@
                         <h3>Discover</h3>
                         <div class="input-group">
                             <label>Filter By</label>
-                            <select id="browseFilter">
+                            <select id="browseFilter" onchange="resetAndLoadLevels()">
                                 <option value="popular">Popular</option>
                                 <option value="new">Newest</option>
                             </select>
@@ -188,16 +205,24 @@
                             <label>Search by Name/Creator</label>
                             <input type="text" id="browseSearch" placeholder="Enter keywords...">
                         </div>
-                        <button class="btn" onclick="loadLevels()">Search Levels</button>
+                        <button class="btn" onclick="resetAndLoadLevels()">Search Levels</button>
                     </div>
                 </div>
-                <div class="main-panel" id="browseResults">
-                    <p style="color: var(--text-dim)">Search for levels to display results.</p>
+                <div class="main-panel">
+                    <div id="browseResults">
+                        <p style="color: var(--text-dim)">Search for levels to display results.</p>
+                    </div>
+                    <!-- Pagination Controls -->
+                    <div class="pagination-ctrl" id="browsePagination" style="display: none;">
+                        <button class="btn btn-secondary" style="width: auto;" id="prevPageBtn" onclick="changePage(-1)">← Prev</button>
+                        <span class="page-indicator">Page <span id="currentPageDisplay">0</span></span>
+                        <button class="btn btn-secondary" style="width: auto;" id="nextPageBtn" onclick="changePage(1)">Next →</button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- PLAYERS TAB -->
+        <!-- Other tabs remain the same structure -->
         <div id="tab-players" class="tab-content">
             <div class="tool-grid">
                 <div class="side-panel">
@@ -221,7 +246,6 @@
             </div>
         </div>
 
-        <!-- LEADERBOARDS TAB -->
         <div id="tab-leaderboards" class="tab-content">
             <div class="main-panel">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -232,7 +256,6 @@
             </div>
         </div>
 
-        <!-- LEVEL INFO TAB -->
         <div id="tab-levels" class="tab-content">
             <div class="tool-grid">
                 <div class="side-panel">
@@ -252,7 +275,6 @@
             </div>
         </div>
 
-        <!-- OFFICIAL RECORDS TAB -->
         <div id="tab-records" class="tab-content">
             <div class="main-panel">
                 <h2>Official World Records</h2>
@@ -260,7 +282,6 @@
             </div>
         </div>
 
-        <!-- ANALYZER TAB -->
         <div id="tab-analyzer" class="tab-content">
             <div class="tool-grid">
                 <div class="side-panel">
@@ -288,6 +309,8 @@
     <script>
         const API_BASE = 'https://api.narrowarrow.xyz';
         const PROXY = 'https://narrow-hub.wilmer-v-123321.workers.dev/?url=';
+
+        let currentBrowsePage = 0;
 
         const OFFICIAL_RECORDS = {
             "Arrow Factory": { "wr": { "completion_time": 13.3, "arrow_name": "Narrow Arrow", "username": "Polar" }, "pb": { "completion_time": 13.73, "arrow_name": "Narrow Arrow" } },
@@ -333,24 +356,41 @@
             return await response.json();
         }
 
-        // BROWSE LOGIC
+        // BROWSE LOGIC WITH PAGINATION
+        function resetAndLoadLevels() {
+            currentBrowsePage = 0;
+            loadLevels();
+        }
+
+        function changePage(delta) {
+            currentBrowsePage += delta;
+            if (currentBrowsePage < 0) currentBrowsePage = 0;
+            loadLevels();
+        }
+
         async function loadLevels() {
             const container = document.getElementById('browseResults');
+            const pagination = document.getElementById('browsePagination');
             const filter = document.getElementById('browseFilter').value;
             const query = document.getElementById('browseSearch').value.toLowerCase();
             
             container.innerHTML = '<div class="loading-spinner"></div>';
+            pagination.style.display = 'none';
+
             try {
-                const levels = await fetchAPI(`/published-levels?filter=${filter}&page=0`);
+                // CHANGED: Added currentBrowsePage variable to the URL
+                const levels = await fetchAPI(`/published-levels?filter=${filter}&page=${currentBrowsePage}`);
                 
-                // Filtering
                 const filtered = levels.filter(l => 
                     l.name.toLowerCase().includes(query) || 
                     l.creator_name.toLowerCase().includes(query)
                 );
 
                 if (filtered.length === 0) {
-                    container.innerHTML = '<p>No levels matching your search were found.</p>';
+                    container.innerHTML = '<p>No levels matching your search were found on this page.</p>';
+                    // Keep pagination visible so they can go back
+                    pagination.style.display = 'flex';
+                    updatePaginationUI(levels.length);
                     return;
                 }
 
@@ -373,9 +413,22 @@
                     `;
                 });
                 container.innerHTML = html;
+                
+                // Show pagination controls
+                pagination.style.display = 'flex';
+                updatePaginationUI(levels.length);
+
             } catch (e) {
                 container.innerHTML = `<div class="error-msg">Error: ${e.message}</div>`;
             }
+        }
+
+        function updatePaginationUI(itemsOnPage) {
+            document.getElementById('currentPageDisplay').innerText = currentBrowsePage;
+            document.getElementById('prevPageBtn').disabled = (currentBrowsePage === 0);
+            // Typically if itemsOnPage < limit (usually 20-30), it's the last page. 
+            // We'll leave "Next" enabled unless we get an empty result to be safe.
+            document.getElementById('nextPageBtn').disabled = (itemsOnPage === 0);
         }
 
         function goToLevel(id) {
@@ -464,8 +517,6 @@
                         <div class="stat-row"><span class="stat-label">Total Runs</span><span class="stat-value">${data.total_runs}</span></div>
                         <div class="stat-row"><span class="stat-label">Maps Finished</span><span class="stat-value">${data.maps_completed}</span></div>
                     </div>
-                    <h3>Recent Activity</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-dim);">Joined: ${new Date(data.user.joined).toLocaleDateString()}</p>
                 `;
             } catch (e) {
                 container.innerHTML = `<div class="error-msg">Player "${user}" not found.</div>`;
@@ -520,11 +571,6 @@
                         <div class="stat-row"><span class="stat-label">Inputs</span><span class="stat-value">${data.input_count}</span></div>
                         <div class="stat-row"><span class="stat-label">Verified</span><span class="stat-value">${data.verified ? '✅ Verified' : '❌ Unverified'}</span></div>
                     </div>
-                    <h3>Skin Config</h3>
-                    <div class="card" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <span class="badge" style="background: ${data.skinConfig.themeColor.name}">${data.skinConfig.themeColor.name}</span>
-                        <span class="badge" style="background: #444;">Shader: ${data.skinConfig.thrustShader.name}</span>
-                    </div>
                 `;
             } catch (e) {
                 container.innerHTML = `<div class="error-msg">Could not fetch run data.</div>`;
@@ -556,10 +602,6 @@
                                 <span class="stat-label">Holder</span>
                                 <span class="stat-value" style="color: var(--accent); cursor: pointer;" onclick="goToPlayer('${data.wr.username}')">${data.wr.username}</span>
                             </div>
-                            <div class="stat-row">
-                                <span class="stat-label">Arrow</span>
-                                <span class="stat-value">${data.wr.arrow_name}</span>
-                            </div>
                         </div>
                     </div>
                 `;
@@ -584,9 +626,7 @@
                         </thead>
                         <tbody>
                             <tr><td>Trophies</td><td style="color: #fbbf24">${d1.trophies}</td><td style="color: #fbbf24">${d2.trophies}</td></tr>
-                            <tr><td>Win Streak</td><td>${d1.win_streak}</td><td>${d2.win_streak}</td></tr>
                             <tr><td>League</td><td>${d1.league}</td><td>${d2.league}</td></tr>
-                            <tr><td>Total Runs</td><td>${d1.total_runs}</td><td>${d2.total_runs}</td></tr>
                         </tbody>
                     </table>
                 `;
@@ -597,12 +637,12 @@
 
         // Init
         window.onload = () => {
-            loadLevels();
+            resetAndLoadLevels();
             loadGlobalLB();
         };
 
         // Enter keys
-        document.getElementById('browseSearch').onkeypress = (e) => e.key === 'Enter' && loadLevels();
+        document.getElementById('browseSearch').onkeypress = (e) => e.key === 'Enter' && resetAndLoadLevels();
         document.getElementById('playerInp').onkeypress = (e) => e.key === 'Enter' && searchPlayer();
         document.getElementById('levelInp').onkeypress = (e) => e.key === 'Enter' && searchLevel();
         document.getElementById('runInp').onkeypress = (e) => e.key === 'Enter' && analyzeRun();
